@@ -41,6 +41,7 @@ public class Interpreter {
             if(elem instanceof String) {
                 String elemStr = ((String) elem);
                 elemStr =  elemStr.replace(",", "");
+                query.set(i, elemStr);
                 if(elemStr.isEmpty()){
                     query.remove(i);
                     continue;
