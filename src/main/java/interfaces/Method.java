@@ -18,6 +18,7 @@ import main.java.exceptions.SyntaxException;
 import main.java.language.helpers.Literally;
 
 /**
+ * TODO check if this class is ok
  * Created by marco on 31/08/16.
  */
 public class Method {
