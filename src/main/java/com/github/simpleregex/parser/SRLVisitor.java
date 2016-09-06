@@ -76,4 +76,10 @@ public interface SRLVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitGroup_stmt(SRLParser.Group_stmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SRLParser#query}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitQuery(SRLParser.QueryContext ctx);
 }

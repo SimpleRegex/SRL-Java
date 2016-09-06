@@ -88,4 +88,11 @@ public class SRLBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements SR
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitGroup_stmt(SRLParser.Group_stmtContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitQuery(SRLParser.QueryContext ctx) { return visitChildren(ctx); }
 }

@@ -1,56 +1,15 @@
 grammar SRL;
 
-character :
-    KEYW_UPPERCASE? KEYW_LITERALLY STRING
-    | KEYW_DIGIT
-    | KEYW_LETTER
-    | (KEYW_ONE | KEYW_ANY) KEYW_OF STRING
-    | (KEYW_ANY | KEYW_NO) KEYW_CHARACTER
-    | KEYW_ANYHTING
-    | KEYW_NEW KEYW_LINE
-    | KEYW_NO? KEYW_WHITESPACE
-    | KEYW_TAB
-    | KEYW_RAW
+// Literals
+STRING :
+    '"' ~('\r' | '\n')* '"'
+    | '\'' ~('\r' | '\n')* '\''
     ;
+CHAR : ('a' .. 'z') | ('A' .. 'Z') ;
+DIGIT : '0' .. '9' ;
+NUMBER : DIGIT | (('1' .. '9') DIGIT+) ;
 
-specification :
-    KEYW_FROM CHAR KEYW_TO CHAR
-    | KEYW_FROM DIGIT KEYW_TO DIGIT
-    ;
-
-quantifier :
-    KEYW_EXACTLY NUMBER KEYW_TIMES
-    | KEYW_BETWEEN NUMBER KEYW_AND NUMBER KEYW_TIMES?
-    | KEYW_OPTIONAL
-    | KEYW_AT KEYW_LEAST NUMBER KEYW_TIMES?
-    | (KEYW_ONCE | KEYW_NEVER) KEYW_OR KEYW_MORE
-    ;
-
-anchor :
-    (KEYW_BEGINS | KEYW_STARTS) KEYW_WITH block
-    | KEYW_MUST KEYW_END
-    ;
-
-character_stmt : character specification? quantifier? ;
-
-if_stmt :
-    KEYW_IF KEYW_NOT? (
-        KEYW_FOLLOWED KEYW_BY block
-        | KEYW_ALREADY KEYW_HAD block
-    ) ;
-
-flag :
-    KEYW_CASE KEYW_INSENSITIVE
-    | KEYW_MULTI KEYW_LINE
-    | KEYW_ALL KEYW_LAZY
-    ;
-
-stmt : (character_stmt | group_stmt) if_stmt? | flag | anchor;
-stmts: stmt (','? stmt)* ;
-block : '(' stmts ')' | stmt | STRING ;
-group_stmt :
-    KEYW_CAPTURE block (KEYW_AS STRING)? (KEYW_UNTIL STRING)?
-    | KEYW_ANY KEYW_OF block quantifier?;
+WHITESPACE : (' ' | '\t' | '\r' | '\n')+ -> skip ;
 
 // Keyword characters
 A : [Aa] ;
@@ -129,13 +88,56 @@ KEYW_WITH : W I T H ;
 KEYW_MUST : M U S T ;
 KEYW_END : E N D ;
 
-// Literals
-DIGIT : '0' .. '9' ;
-NUMBER : '1' .. '9' DIGIT+ ;
-CHAR : ('a' .. 'z') | ('A' .. 'Z') ;
-
-STRING :
-    '"' ~('\r' | '\n')* '"'
-    | '\'' ~('\r' | '\n')* '\''
+character :
+    KEYW_UPPERCASE? KEYW_LITERALLY STRING
+    | KEYW_DIGIT
+    | KEYW_UPPERCASE? KEYW_LETTER
+    | (KEYW_ONE | KEYW_ANY) KEYW_OF STRING
+    | (KEYW_ANY | KEYW_NO) KEYW_CHARACTER
+    | KEYW_ANYHTING
+    | KEYW_NEW KEYW_LINE
+    | KEYW_NO? KEYW_WHITESPACE
+    | KEYW_TAB
+    | KEYW_RAW
     ;
-WHITESPACE : (' ' | '\t' | '\r' | '\n')+ -> skip ;
+
+specification :
+    KEYW_FROM CHAR KEYW_TO CHAR
+    | KEYW_FROM DIGIT KEYW_TO DIGIT
+    ;
+
+quantifier :
+    KEYW_EXACTLY DIGIT KEYW_TIMES
+    | KEYW_BETWEEN DIGIT KEYW_AND NUMBER KEYW_TIMES?
+    | KEYW_OPTIONAL
+    | KEYW_AT KEYW_LEAST DIGIT KEYW_TIMES?
+    | (KEYW_ONCE | KEYW_NEVER) KEYW_OR KEYW_MORE
+    ;
+
+anchor :
+    (KEYW_BEGINS | KEYW_STARTS) KEYW_WITH block
+    | KEYW_MUST KEYW_END
+    ;
+
+character_stmt : character specification? ;
+
+if_stmt :
+    KEYW_IF KEYW_NOT? (
+        KEYW_FOLLOWED KEYW_BY block
+        | KEYW_ALREADY KEYW_HAD block
+    ) ;
+
+flag :
+    KEYW_CASE KEYW_INSENSITIVE
+    | KEYW_MULTI KEYW_LINE
+    | KEYW_ALL KEYW_LAZY
+    ;
+
+stmt : (character_stmt | group_stmt | if_stmt) quantifier? | flag | anchor | stmt if_stmt | '(' stmt ')' quantifier?;
+stmts: stmt (','? stmt)* ;
+block : '(' stmts ')' | stmt | STRING ;
+group_stmt :
+    KEYW_CAPTURE block (KEYW_AS STRING)? (KEYW_UNTIL block)?
+    | KEYW_ANY KEYW_OF block
+    ;
+query : stmts EOF ;

@@ -3,7 +3,6 @@ package com.github.simpleregex;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 
 /**
  * Created by samtebbs on 04/09/2016.
