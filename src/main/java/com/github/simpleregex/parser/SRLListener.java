@@ -8,6 +8,36 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface SRLListener extends ParseTreeListener {
 	/**
+	 * Enter a parse tree produced by {@link SRLParser#literally}.
+	 * @param ctx the parse tree
+	 */
+	void enterLiterally(SRLParser.LiterallyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SRLParser#literally}.
+	 * @param ctx the parse tree
+	 */
+	void exitLiterally(SRLParser.LiterallyContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SRLParser#letter}.
+	 * @param ctx the parse tree
+	 */
+	void enterLetter(SRLParser.LetterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SRLParser#letter}.
+	 * @param ctx the parse tree
+	 */
+	void exitLetter(SRLParser.LetterContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SRLParser#of}.
+	 * @param ctx the parse tree
+	 */
+	void enterOf(SRLParser.OfContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SRLParser#of}.
+	 * @param ctx the parse tree
+	 */
+	void exitOf(SRLParser.OfContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link SRLParser#character}.
 	 * @param ctx the parse tree
 	 */
@@ -18,6 +48,16 @@ public interface SRLListener extends ParseTreeListener {
 	 */
 	void exitCharacter(SRLParser.CharacterContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link SRLParser#provider}.
+	 * @param ctx the parse tree
+	 */
+	void enterProvider(SRLParser.ProviderContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SRLParser#provider}.
+	 * @param ctx the parse tree
+	 */
+	void exitProvider(SRLParser.ProviderContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link SRLParser#specification}.
 	 * @param ctx the parse tree
 	 */
@@ -27,6 +67,46 @@ public interface SRLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSpecification(SRLParser.SpecificationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SRLParser#exactly}.
+	 * @param ctx the parse tree
+	 */
+	void enterExactly(SRLParser.ExactlyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SRLParser#exactly}.
+	 * @param ctx the parse tree
+	 */
+	void exitExactly(SRLParser.ExactlyContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SRLParser#between}.
+	 * @param ctx the parse tree
+	 */
+	void enterBetween(SRLParser.BetweenContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SRLParser#between}.
+	 * @param ctx the parse tree
+	 */
+	void exitBetween(SRLParser.BetweenContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SRLParser#at_least}.
+	 * @param ctx the parse tree
+	 */
+	void enterAt_least(SRLParser.At_leastContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SRLParser#at_least}.
+	 * @param ctx the parse tree
+	 */
+	void exitAt_least(SRLParser.At_leastContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SRLParser#or_more}.
+	 * @param ctx the parse tree
+	 */
+	void enterOr_more(SRLParser.Or_moreContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SRLParser#or_more}.
+	 * @param ctx the parse tree
+	 */
+	void exitOr_more(SRLParser.Or_moreContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SRLParser#quantifier}.
 	 * @param ctx the parse tree
@@ -117,6 +197,26 @@ public interface SRLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBlock(SRLParser.BlockContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SRLParser#capture}.
+	 * @param ctx the parse tree
+	 */
+	void enterCapture(SRLParser.CaptureContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SRLParser#capture}.
+	 * @param ctx the parse tree
+	 */
+	void exitCapture(SRLParser.CaptureContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SRLParser#any_of}.
+	 * @param ctx the parse tree
+	 */
+	void enterAny_of(SRLParser.Any_ofContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SRLParser#any_of}.
+	 * @param ctx the parse tree
+	 */
+	void exitAny_of(SRLParser.Any_ofContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SRLParser#group_stmt}.
 	 * @param ctx the parse tree

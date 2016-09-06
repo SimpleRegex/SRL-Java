@@ -58,7 +58,7 @@ KEYW_TAB : T A B ;
 KEYW_RAW : R A W ;
 KEYW_TO : T O ;
 KEYW_EXACTLY : E X A C T L Y ;
-KEYW_TIMES : T I M E S ;
+KEYW_TIMES : T I M E S | T I M E ;
 KEYW_BETWEEN : B E T W E E N ;
 KEYW_AND : A N D ;
 KEYW_OPTIONAL : O P T I O N A L ;
@@ -88,17 +88,22 @@ KEYW_WITH : W I T H ;
 KEYW_MUST : M U S T ;
 KEYW_END : E N D ;
 
-character :
-    KEYW_UPPERCASE? KEYW_LITERALLY STRING
+literally : KEYW_LITERALLY STRING ;
+letter : KEYW_UPPERCASE? KEYW_LETTER ;
+of : (KEYW_ONE | KEYW_ANY) KEYW_OF STRING ;
+character : (KEYW_ANY | KEYW_NO) KEYW_CHARACTER ;
+
+provider :
+    literally
     | KEYW_DIGIT
-    | KEYW_UPPERCASE? KEYW_LETTER
-    | (KEYW_ONE | KEYW_ANY) KEYW_OF STRING
-    | (KEYW_ANY | KEYW_NO) KEYW_CHARACTER
+    | letter
+    | of
+    | character
     | KEYW_ANYHTING
     | KEYW_NEW KEYW_LINE
     | KEYW_NO? KEYW_WHITESPACE
     | KEYW_TAB
-    | KEYW_RAW
+    | KEYW_RAW STRING
     ;
 
 specification :
@@ -106,12 +111,17 @@ specification :
     | KEYW_FROM DIGIT KEYW_TO DIGIT
     ;
 
+exactly : KEYW_EXACTLY DIGIT KEYW_TIMES ;
+between : KEYW_BETWEEN DIGIT KEYW_AND DIGIT KEYW_TIMES? ;
+at_least : KEYW_AT KEYW_LEAST DIGIT KEYW_TIMES? ;
+or_more : (KEYW_ONCE | KEYW_NEVER) KEYW_OR KEYW_MORE ;
+
 quantifier :
-    KEYW_EXACTLY DIGIT KEYW_TIMES
-    | KEYW_BETWEEN DIGIT KEYW_AND NUMBER KEYW_TIMES?
+    exactly
+    | between
     | KEYW_OPTIONAL
-    | KEYW_AT KEYW_LEAST DIGIT KEYW_TIMES?
-    | (KEYW_ONCE | KEYW_NEVER) KEYW_OR KEYW_MORE
+    | at_least
+    | or_more
     ;
 
 anchor :
@@ -119,7 +129,7 @@ anchor :
     | KEYW_MUST KEYW_END
     ;
 
-character_stmt : character specification? ;
+character_stmt : provider specification? ;
 
 if_stmt :
     KEYW_IF KEYW_NOT? (
@@ -137,8 +147,10 @@ quantifiable_stmt : character_stmt | group_stmt | if_stmt | '(' stmt ')' ;
 stmt : flag | anchor | stmt if_stmt | quantifiable_stmt quantifier?;
 stmts: stmt (','? stmt)* ;
 block : '(' stmts ')' | stmt | STRING ;
+capture : KEYW_CAPTURE block (KEYW_AS STRING)? (KEYW_UNTIL block)? ;
+any_of : KEYW_ANY KEYW_OF block ;
 group_stmt :
-    KEYW_CAPTURE block (KEYW_AS STRING)? (KEYW_UNTIL block)?
-    | KEYW_ANY KEYW_OF block
+    capture
+    | any_of
     ;
 query : stmts EOF ;
