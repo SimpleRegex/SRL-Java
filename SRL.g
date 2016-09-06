@@ -133,7 +133,8 @@ flag :
     | KEYW_ALL KEYW_LAZY
     ;
 
-stmt : (character_stmt | group_stmt | if_stmt) quantifier? | flag | anchor | stmt if_stmt | '(' stmt ')' quantifier?;
+quantifiable_stmt : character_stmt | group_stmt | if_stmt | '(' stmt ')' ;
+stmt : flag | anchor | stmt if_stmt | quantifiable_stmt quantifier?;
 stmts: stmt (','? stmt)* ;
 block : '(' stmts ')' | stmt | STRING ;
 group_stmt :
