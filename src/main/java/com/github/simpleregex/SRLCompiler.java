@@ -1,15 +1,15 @@
 package com.github.simpleregex;
 
-import com.github.simpleregex.parser.SRLBaseVisitor;
 import com.github.simpleregex.parser.SRLLexer;
+import com.github.simpleregex.parser.SRLListener;
 import com.github.simpleregex.parser.SRLParser;
-import com.github.simpleregex.parser.SRLParserVisitor;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.DOTTreeGenerator;
 import org.antlr.runtime.tree.TreeWizard;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -39,8 +39,8 @@ public class SRLCompiler {
     }
 
     public void analyse() {
-        SRLParserVisitor visitor = new SRLParserVisitor();
-        visitor.visitQuery(tree);
+        SRLListener listener = new SRLParseTreeListener();
+        ParseTreeWalker.DEFAULT.walk(listener, tree);
     }
 
     public String generate() {

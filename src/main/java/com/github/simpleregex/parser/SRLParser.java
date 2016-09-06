@@ -127,9 +127,12 @@ public class SRLParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_character; }
 		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SRLVisitor ) return ((SRLVisitor<? extends T>)visitor).visitCharacter(this);
-			else return visitor.visitChildren(this);
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).enterCharacter(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).exitCharacter(this);
 		}
 	}
 
@@ -287,9 +290,12 @@ public class SRLParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_specification; }
 		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SRLVisitor ) return ((SRLVisitor<? extends T>)visitor).visitSpecification(this);
-			else return visitor.visitChildren(this);
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).enterSpecification(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).exitSpecification(this);
 		}
 	}
 
@@ -358,9 +364,12 @@ public class SRLParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_quantifier; }
 		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SRLVisitor ) return ((SRLVisitor<? extends T>)visitor).visitQuantifier(this);
-			else return visitor.visitChildren(this);
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).enterQuantifier(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).exitQuantifier(this);
 		}
 	}
 
@@ -479,9 +488,12 @@ public class SRLParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_anchor; }
 		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SRLVisitor ) return ((SRLVisitor<? extends T>)visitor).visitAnchor(this);
-			else return visitor.visitChildren(this);
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).enterAnchor(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).exitAnchor(this);
 		}
 	}
 
@@ -545,9 +557,12 @@ public class SRLParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_character_stmt; }
 		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SRLVisitor ) return ((SRLVisitor<? extends T>)visitor).visitCharacter_stmt(this);
-			else return visitor.visitChildren(this);
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).enterCharacter_stmt(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).exitCharacter_stmt(this);
 		}
 	}
 
@@ -597,9 +612,12 @@ public class SRLParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_if_stmt; }
 		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SRLVisitor ) return ((SRLVisitor<? extends T>)visitor).visitIf_stmt(this);
-			else return visitor.visitChildren(this);
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).enterIf_stmt(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).exitIf_stmt(this);
 		}
 	}
 
@@ -671,9 +689,12 @@ public class SRLParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_flag; }
 		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SRLVisitor ) return ((SRLVisitor<? extends T>)visitor).visitFlag(this);
-			else return visitor.visitChildren(this);
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).enterFlag(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).exitFlag(this);
 		}
 	}
 
@@ -752,9 +773,12 @@ public class SRLParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_stmt; }
 		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SRLVisitor ) return ((SRLVisitor<? extends T>)visitor).visitStmt(this);
-			else return visitor.visitChildren(this);
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).enterStmt(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).exitStmt(this);
 		}
 	}
 
@@ -911,9 +935,12 @@ public class SRLParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_stmts; }
 		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SRLVisitor ) return ((SRLVisitor<? extends T>)visitor).visitStmts(this);
-			else return visitor.visitChildren(this);
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).enterStmts(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).exitStmts(this);
 		}
 	}
 
@@ -975,9 +1002,12 @@ public class SRLParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_block; }
 		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SRLVisitor ) return ((SRLVisitor<? extends T>)visitor).visitBlock(this);
-			else return visitor.visitChildren(this);
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).enterBlock(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).exitBlock(this);
 		}
 	}
 
@@ -1044,9 +1074,12 @@ public class SRLParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_group_stmt; }
 		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SRLVisitor ) return ((SRLVisitor<? extends T>)visitor).visitGroup_stmt(this);
-			else return visitor.visitChildren(this);
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).enterGroup_stmt(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).exitGroup_stmt(this);
 		}
 	}
 
@@ -1125,9 +1158,12 @@ public class SRLParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_query; }
 		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SRLVisitor ) return ((SRLVisitor<? extends T>)visitor).visitQuery(this);
-			else return visitor.visitChildren(this);
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).enterQuery(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof SRLListener ) ((SRLListener)listener).exitQuery(this);
 		}
 	}
 
