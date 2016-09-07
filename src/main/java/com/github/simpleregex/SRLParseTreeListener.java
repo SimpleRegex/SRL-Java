@@ -70,9 +70,9 @@ public class SRLParseTreeListener extends SRLBaseListener {
 
     public String generate(SRLParser.QueryContext query) {
         result = new StringBuffer();
-        ParseTreeWalker.DEFAULT.walk(this, query);
-        result.append("/");
-        flags.forEach(flag -> result.append(flag.str));
+        enterQuery(query);
+        add("/");
+        flags.forEach(flag -> add(flag.str));
         return result.toString();
     }
 
