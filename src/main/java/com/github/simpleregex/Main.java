@@ -11,11 +11,10 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         StringBuilder sb = new StringBuilder("");
-
-        SRLCompiler compiler = new SRLCompiler("capture (digit) if not followed by (anything once or more, digit)");
+        for (String line : Files.readAllLines(Paths.get(args[0]))) sb.append(line).append("\n");
+        SRLCompiler compiler = new SRLCompiler(sb.toString());
         compiler.parse();
         compiler.analyse();
-
         System.out.println(compiler.generate());
     }
 
