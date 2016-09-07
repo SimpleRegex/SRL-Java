@@ -38,7 +38,10 @@ public class SRLCompiler {
     }
 
     public String generate() {
-        return "";
+        return tree.toStringTree();
     }
+
+
+
 
 }
