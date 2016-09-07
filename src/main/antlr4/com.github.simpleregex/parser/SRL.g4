@@ -1,5 +1,15 @@
 grammar SRL;
 
+options {
+    // antlr will generate java lexer and parser
+    language = Java;
+    // generated parser should create abstract syntax tree
+    output = AST;
+}
+
+
+
+
 // Literals
 STRING :
     '"' ~('\r' | '\n')* '"'
