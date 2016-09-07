@@ -65,11 +65,15 @@ public class SRLParseTreeListener extends SRLBaseListener {
         }
     }
 
-    StringBuffer result = new StringBuffer("/");
+    String[] regexCharacters = {
+      "[", "]", "\\", "^", "$", ".", "|", "?", "*", "+", "(", ")", "-", "/"
+    };
+
+    StringBuffer result;
     List<RegexElement> flags = new LinkedList<>();
 
     public String generate(SRLParser.QueryContext query) {
-        result = new StringBuffer();
+        result = new StringBuffer("/");
         enterQuery(query);
         add("/");
         flags.forEach(flag -> add(flag.str));
@@ -98,16 +102,16 @@ public class SRLParseTreeListener extends SRLBaseListener {
         add(elem.str);
     }
 
-    @Override
-    public void enterQuery(SRLParser.QueryContext ctx) {
-        enterStmts(ctx.stmts());
+    private String escape(TerminalNode terminal) {
+        String str = terminal.getText();
+        str = str.substring(1, str.length() - 1);
+        for(String c : regexCharacters) str = str.replace(c, "\\" + c);
+        return str;
     }
 
     @Override
-    public void enterStmts(SRLParser.StmtsContext ctx) {
-        addRegexStart(RegexElement.GROUP);
-        ctx.stmt().forEach(this::enterStmt);
-        addRegexEnd(RegexElement.GROUP);
+    public void enterQuery(SRLParser.QueryContext ctx) {
+        visit(ctx.block(), this::enterBlock);
     }
 
     @Override
@@ -221,7 +225,7 @@ public class SRLParseTreeListener extends SRLBaseListener {
 
     @Override
     public void enterLiterally(SRLParser.LiterallyContext ctx) {
-        visitTerminal(ctx.STRING());
+        add(escape(ctx.STRING()));
     }
 
     @Override
@@ -234,7 +238,7 @@ public class SRLParseTreeListener extends SRLBaseListener {
     public void enterOf(SRLParser.OfContext ctx) {
         RegexElement elem = ctx.KEYW_ANY() != null ? RegexElement.ANY_OF : RegexElement.ONE_OF;
         addRegexStart(elem);
-        visitTerminal(ctx.STRING());
+        add(escape(ctx.STRING()));
         addRegexEnd(elem);
     }
 
