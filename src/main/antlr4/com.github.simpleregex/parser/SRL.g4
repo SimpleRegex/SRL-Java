@@ -1,14 +1,15 @@
 grammar SRL;
 
+@header {
+import com.github.simpleregex.parser.SRLListener;
+}
+
 options {
     // antlr will generate java lexer and parser
     language = Java;
     // generated parser should create abstract syntax tree
     output = AST;
 }
-
-
-
 
 // Literals
 STRING :
