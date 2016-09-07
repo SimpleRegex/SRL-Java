@@ -124,7 +124,7 @@ public class SRLParseTreeListener extends SRLBaseListener {
     public void enterStmt(SRLParser.StmtContext ctx) {
         visit(ctx.flag(), this::enterFlag);
         visit(ctx.anchor(), this::enterAnchor);
-        if(ctx.if_stmt() != null) enterConditionalStmt(ctx.if_stmt(), ctx.stmt());
+        if(ctx.if_stmt() != null) enterConditionalStmt(ctx.if_stmt(), ctx.stmt(), this::enterStmt);
         visit(ctx.quantifiable_stmt(), this::enterQuantifiable_stmt);
         visit(ctx.quantifier(), this::enterQuantifier);
     }
@@ -167,20 +167,19 @@ public class SRLParseTreeListener extends SRLBaseListener {
         addRegexVal(element);
     }
 
-    private void enterConditionalStmt(SRLParser.If_stmtContext ifStmt, SRLParser.StmtContext stmt) {
+    private <T extends ParserRuleContext> void enterConditionalStmt(SRLParser.If_stmtContext ifStmt, T stmt, Consumer<T> visitor) {
+        RegexElement ifRegex = null;
         if(ifStmt.KEYW_HAD() != null) {
-            RegexElement ifRegex = ifStmt.KEYW_NOT() != null ? RegexElement.IF_NOT_HAD : RegexElement.IF_HAD;
+            ifRegex = ifStmt.KEYW_NOT() != null ? RegexElement.IF_NOT_HAD : RegexElement.IF_HAD;
             addRegexStart(ifRegex);
-            enterBlock(ifStmt.block());
-            addRegexEnd(ifRegex);
+            visitor.accept(stmt);
         }
-        enterStmt(stmt);
         if(ifStmt.KEYW_FOLLOWED() != null){
-            RegexElement ifRegex = ifStmt.KEYW_NOT() != null ? RegexElement.IF_NOT_FOLLOWED : RegexElement.IF_FOLLOWED;
+            ifRegex = ifStmt.KEYW_NOT() != null ? RegexElement.IF_NOT_FOLLOWED : RegexElement.IF_FOLLOWED;
             addRegexStart(ifRegex);
-            enterBlock(ifStmt.block());
-            addRegexEnd(ifRegex);
+            visitor.accept(stmt);
         }
+        addRegexEnd(ifRegex);
     }
 
     @Override
@@ -271,7 +270,7 @@ public class SRLParseTreeListener extends SRLBaseListener {
 
     @Override
     public void enterIf_stmt(SRLParser.If_stmtContext ctx) {
-        // Implemented in enterConditional_stmt()
+        enterConditionalStmt(ctx, ctx.block(), this::enterBlock);
     }
 
     @Override
