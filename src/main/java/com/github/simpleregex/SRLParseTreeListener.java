@@ -6,9 +6,11 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 /**
  * Created by samtebbs on 06/09/2016.
@@ -20,12 +22,12 @@ public class SRLParseTreeListener extends SRLBaseListener {
         GROUP("(?:", ")"),
         OPTIONAL("?"),
         CAPTURE("(", ")"),
-        CAPTURE_AS("?<", ">(", ")"),
+        CAPTURE_AS("(?<", ">", ")"),
         CASE_INSENSITIVE("i"),
         AT_LEAST("{", ",}"),
         BETWEEN("{", ",", "}"),
         EXACTLY("{", "}"),
-        NEVER_OR_MORE("*"),
+        NEVER_OR_MORE("*?"),
         ONCE_OR_MORE("+"),
         DIGIT("[0-9]"),
         NEW_LINE("\\n"),
@@ -86,7 +88,6 @@ public class SRLParseTreeListener extends SRLBaseListener {
 
 
     private void add(String str) {
-        System.out.println("adding " + str);
         result.append(str);
     }
 
@@ -121,14 +122,10 @@ public class SRLParseTreeListener extends SRLBaseListener {
 
     @Override
     public void enterStmt(SRLParser.StmtContext ctx) {
-        addRegexStart(RegexElement.GROUP);
         visit(ctx.flag(), this::enterFlag);
         visit(ctx.anchor(), this::enterAnchor);
-        if(ctx.if_stmt() != null) {
-            enterConditionalStmt(ctx.if_stmt(), ctx.stmt());
-        }
+        if(ctx.if_stmt() != null) enterConditionalStmt(ctx.if_stmt(), ctx.stmt());
         visit(ctx.quantifiable_stmt(), this::enterQuantifiable_stmt);
-        addRegexEnd(RegexElement.GROUP);
         visit(ctx.quantifier(), this::enterQuantifier);
     }
 
@@ -197,6 +194,7 @@ public class SRLParseTreeListener extends SRLBaseListener {
     public void enterAnchor(SRLParser.AnchorContext ctx) {
         if(ctx.KEYW_END() != null) addRegexVal(RegexElement.END_OF_STRING);
         else if(ctx.KEYW_BEGINS() != null | ctx.KEYW_STARTS() != null) addRegexVal(RegexElement.START_OF_STRING);
+        visit(ctx.block(), this::enterBlock);
     }
 
     @Override
@@ -204,7 +202,7 @@ public class SRLParseTreeListener extends SRLBaseListener {
         visit(ctx.character_stmt(), this::enterCharacter_stmt);
         visit(ctx.if_stmt(), this::enterIf_stmt);
         visit(ctx.group_stmt(), this::enterGroup_stmt);
-        visit(ctx.stmt(), this::enterStmt);
+        visit(ctx.bracketed_stmts(), this::enterBracketed_stmts);
     }
 
     @Override
@@ -279,12 +277,8 @@ public class SRLParseTreeListener extends SRLBaseListener {
     @Override
     public void enterBlock(SRLParser.BlockContext ctx) {
         if(ctx.STRING() != null) visitTerminal(ctx.STRING());
-        else {
-            addRegexStart(RegexElement.GROUP);
-            visit(ctx.stmt(), this::enterStmt);
-            visit(ctx.stmts(), this::enterStmts);
-            addRegexEnd(RegexElement.GROUP);
-        }
+        visit(ctx.bracketed_stmts(), this::enterBracketed_stmts);
+        ctx.stmt().forEach(this::enterStmt);
     }
 
     @Override
@@ -297,7 +291,7 @@ public class SRLParseTreeListener extends SRLBaseListener {
     public void enterCapture(SRLParser.CaptureContext ctx) {
         if(ctx.KEYW_AS() != null) {
             addRegexStart(RegexElement.CAPTURE_AS);
-            visitTerminal(ctx.STRING());
+            add(escape(ctx.STRING()));
             addRegexVal(RegexElement.CAPTURE_AS);
         } else addRegexStart(RegexElement.CAPTURE);
         visit(ctx.block(0), this::enterBlock);
@@ -306,13 +300,20 @@ public class SRLParseTreeListener extends SRLBaseListener {
     }
 
     @Override
-    public void enterAny_of(SRLParser.Any_ofContext ctx) {
+    public void enterBracketed_stmts(SRLParser.Bracketed_stmtsContext ctx) {
         addRegexStart(RegexElement.GROUP);
+        ctx.stmt().forEach(this::enterStmt);
+        addRegexEnd(RegexElement.GROUP);
+    }
+
+    @Override
+    public void enterAny_of(SRLParser.Any_ofContext ctx) {
         SRLParser.BlockContext block = ctx.block();
         if(block.STRING() != null) visitTerminal(block.STRING());
         else {
-            visit(block.stmt(), this::enterStmt);
-            List<SRLParser.StmtContext> stmts = block.stmts().stmt();
+            addRegexStart(RegexElement.GROUP);
+            block.stmt().forEach(this::enterStmt);
+            List<SRLParser.StmtContext> stmts = block.bracketed_stmts().stmt();
             if(stmts.size() > 0) {
                 visit(stmts.get(0), this::enterStmt);
                 for (int i = 1; i < stmts.size(); i++) {
@@ -320,8 +321,8 @@ public class SRLParseTreeListener extends SRLBaseListener {
                     visit(stmts.get(i), this::enterStmt);
                 }
             }
+            addRegexEnd(RegexElement.GROUP);
         }
-        addRegexEnd(RegexElement.GROUP);
     }
 
 }
