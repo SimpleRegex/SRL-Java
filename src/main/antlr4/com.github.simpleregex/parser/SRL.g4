@@ -1,5 +1,9 @@
 grammar SRL;
 
+@header {
+import com.github.simpleregex.parser.SRLListener;
+}
+
 options {
     // antlr will generate java lexer and parser
     language = Java;
@@ -7,13 +11,9 @@ options {
     output = AST;
 }
 
-
-
-
 // Literals
 STRING :
-    '"' ~('\r' | '\n')* '"'
-    | '\'' ~('\r' | '\n')* '\''
+    '"' ~('\r' | '\n' | '\"')* '"'
     ;
 CHAR : ('a' .. 'z') | ('A' .. 'Z') ;
 DIGIT : '0' .. '9' ;
@@ -153,14 +153,14 @@ flag :
     | KEYW_ALL KEYW_LAZY
     ;
 
-quantifiable_stmt : character_stmt | group_stmt | if_stmt | '(' stmt ')' ;
+quantifiable_stmt : character_stmt | group_stmt | if_stmt | bracketed_stmts ;
 stmt : flag | anchor | stmt if_stmt | quantifiable_stmt quantifier?;
-stmts: stmt (','? stmt)* ;
-block : '(' stmts ')' | stmt | STRING ;
+bracketed_stmts : '(' stmt (','? stmt)* ')' ;
+block : bracketed_stmts | stmt | STRING | stmt (','? stmt)* ;
 capture : KEYW_CAPTURE block (KEYW_AS STRING)? (KEYW_UNTIL block)? ;
 any_of : KEYW_ANY KEYW_OF block ;
 group_stmt :
     capture
     | any_of
     ;
-query : stmts EOF ;
+query : block EOF ;

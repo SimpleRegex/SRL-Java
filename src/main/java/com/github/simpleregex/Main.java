@@ -14,7 +14,6 @@ public class Main {
         for (String line : Files.readAllLines(Paths.get(args[0]))) sb.append(line).append("\n");
         SRLCompiler compiler = new SRLCompiler(sb.toString());
         compiler.parse();
-        compiler.analyse();
         System.out.println(compiler.generate());
     }
 

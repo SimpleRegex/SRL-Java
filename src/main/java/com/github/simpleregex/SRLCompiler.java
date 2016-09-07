@@ -32,13 +32,8 @@ public class SRLCompiler {
         tree = parser.query(); // parse a start rule
     }
 
-    public void analyse() {
-        SRLListener listener = new SRLParseTreeListener();
-        ParseTreeWalker.DEFAULT.walk(listener, tree);
-    }
-
     public String generate() {
-        return tree.toStringTree();
+        return new SRLParseTreeListener().generate(tree);
     }
 
 

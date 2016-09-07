@@ -1,1 +1,1 @@
-capture (digit) if not followed by (anything once or more, digit)
+literally "a", literally "b"
