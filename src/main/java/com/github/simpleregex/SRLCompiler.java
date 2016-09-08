@@ -19,13 +19,8 @@ public class SRLCompiler {
     private SRLParser.QueryContext tree;
 
     public SRLCompiler(String input) {
-        CharStream stream = new ANTLRInputStream(input);
-        lexer = new SRLLexer(stream);
-        TokenStream tokenStream = new CommonTokenStream(lexer);
-
-        // Prepare the parser
-        parser = new SRLParser(tokenStream);
-        //parser.setTrace(true);
+        lexer = new SRLLexer(new ANTLRInputStream(input));
+        parser = new SRLParser(new CommonTokenStream(lexer));
     }
 
     public void parse() {
@@ -35,8 +30,5 @@ public class SRLCompiler {
     public String generate() {
         return new SRLParseTreeListener().generate(tree);
     }
-
-
-
 
 }
