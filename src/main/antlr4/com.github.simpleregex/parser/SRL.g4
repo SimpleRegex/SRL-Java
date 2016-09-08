@@ -156,11 +156,11 @@ flag :
 quantifiable_stmt : character_stmt | group_stmt | if_stmt | bracketed_stmts ;
 stmt : flag | anchor | stmt if_stmt | quantifiable_stmt quantifier?;
 bracketed_stmts : '(' stmt (','? stmt)* ')' ;
-block : bracketed_stmts | stmt | STRING | stmt (','? stmt)* ;
+block : bracketed_stmts | stmt | STRING ;
 capture : KEYW_CAPTURE block (KEYW_AS STRING)? (KEYW_UNTIL block)? ;
 any_of : KEYW_ANY KEYW_OF block ;
 group_stmt :
     capture
     | any_of
     ;
-query : block EOF ;
+query : stmt (','? stmt)* EOF ;

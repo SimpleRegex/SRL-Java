@@ -108,7 +108,7 @@ public class SRLParseTreeListener extends SRLBaseListener {
 
     @Override
     public void enterQuery(SRLParser.QueryContext ctx) {
-        visit(ctx.block(), this::enterBlock);
+        ctx.stmt().forEach(this::enterStmt);
     }
 
     @Override
@@ -277,7 +277,7 @@ public class SRLParseTreeListener extends SRLBaseListener {
     public void enterBlock(SRLParser.BlockContext ctx) {
         if(ctx.STRING() != null) visitTerminal(ctx.STRING());
         visit(ctx.bracketed_stmts(), this::enterBracketed_stmts);
-        ctx.stmt().forEach(this::enterStmt);
+        visit(ctx.stmt(), this::enterStmt);
     }
 
     @Override
@@ -300,9 +300,10 @@ public class SRLParseTreeListener extends SRLBaseListener {
 
     @Override
     public void enterBracketed_stmts(SRLParser.Bracketed_stmtsContext ctx) {
-        addRegexStart(RegexElement.GROUP);
+        boolean multipleStmts = ctx.stmt().size() > 1;
+        if(multipleStmts) addRegexStart(RegexElement.GROUP);
         ctx.stmt().forEach(this::enterStmt);
-        addRegexEnd(RegexElement.GROUP);
+        if(multipleStmts) addRegexEnd(RegexElement.GROUP);
     }
 
     @Override
@@ -311,8 +312,7 @@ public class SRLParseTreeListener extends SRLBaseListener {
         if(block.STRING() != null) visitTerminal(block.STRING());
         else {
             addRegexStart(RegexElement.ANY_OF);
-            block.stmt().forEach(this::enterStmt);
-            List<SRLParser.StmtContext> stmts = block.bracketed_stmts().stmt();
+            List<SRLParser.StmtContext> stmts = blockStmts(block);
             if(stmts.size() > 0) {
                 visit(stmts.get(0), this::enterStmt);
                 for (int i = 1; i < stmts.size(); i++) {
@@ -322,6 +322,13 @@ public class SRLParseTreeListener extends SRLBaseListener {
             }
             addRegexEnd(RegexElement.ANY_OF);
         }
+    }
+
+    private List<SRLParser.StmtContext> blockStmts(SRLParser.BlockContext block) {
+        if(block.bracketed_stmts() != null) return block.bracketed_stmts().stmt();
+        else return new LinkedList<SRLParser.StmtContext>() {{
+            add(block.stmt());
+        }};
     }
 
 }
