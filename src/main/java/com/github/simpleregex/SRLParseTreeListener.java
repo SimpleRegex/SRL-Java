@@ -3,14 +3,11 @@ package com.github.simpleregex;
 import com.github.simpleregex.parser.SRLBaseListener;
 import com.github.simpleregex.parser.SRLParser;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.regex.Pattern;
 
 /**
  * Created by samtebbs on 06/09/2016.
@@ -44,7 +41,7 @@ public class SRLParseTreeListener extends SRLBaseListener {
         ALL_LAZY("U"),
         MULTI_LINE("m"),
         END_OF_STRING("$"),
-        START_OF_STRING("^"),
+        BEGINS_WITH("^"),
         IF_FOLLOWED("(?=", ")"),
         IF_NOT_FOLLOWED("(?!", ")"),
         IF_HAD("(?<=", ")"),
@@ -131,7 +128,6 @@ public class SRLParseTreeListener extends SRLBaseListener {
     @Override
     public void enterQuantifier(SRLParser.QuantifierContext ctx) {
         boolean optional = ctx.KEYW_OPTIONAL() != null;
-        if(optional) addRegexStart(RegexElement.OPTIONAL);
         visit(ctx.at_least(), this::enterAt_least);
         visit(ctx.between(), this::enterBetween);
         visit(ctx.exactly(), this::enterExactly);
@@ -194,8 +190,10 @@ public class SRLParseTreeListener extends SRLBaseListener {
     @Override
     public void enterAnchor(SRLParser.AnchorContext ctx) {
         if(ctx.KEYW_END() != null) addRegexVal(RegexElement.END_OF_STRING);
-        else if(ctx.KEYW_BEGINS() != null | ctx.KEYW_STARTS() != null) addRegexVal(RegexElement.START_OF_STRING);
-        visit(ctx.block(), this::enterBlock);
+        else if(ctx.KEYW_BEGINS() != null | ctx.KEYW_STARTS() != null) {
+            addRegexVal(RegexElement.BEGINS_WITH);
+            visit(ctx.block(), this::enterBlock);
+        }
     }
 
     @Override
@@ -302,7 +300,9 @@ public class SRLParseTreeListener extends SRLBaseListener {
 
     @Override
     public void enterBracketed_stmts(SRLParser.Bracketed_stmtsContext ctx) {
+        addRegexStart(RegexElement.GROUP);
         ctx.stmt().forEach(this::enterStmt);
+        addRegexEnd(RegexElement.GROUP);
     }
 
     @Override
