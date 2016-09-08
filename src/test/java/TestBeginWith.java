@@ -1,5 +1,5 @@
 import com.github.simpleregex.Main;
-import com.github.simpleregex.SRLCompiler;
+import com.github.simpleregex.error.SRLSyntaxError;
 import junit.framework.TestCase;
 
 import java.io.IOException;
@@ -9,37 +9,27 @@ import java.io.IOException;
  */
 public class TestBeginWith extends TestCase {
 
-    public void test() throws IOException {
-        Main.main(new String[]{"test.srl"});
-    }
-
     /**
      * Test method begin with that accept one digit
      */
-    public void testBeginWithDigit(){
-        SRLCompiler compiler = new SRLCompiler("begin with digit");
-        compiler.parse();
-        assertEquals("/^[0-9]/",compiler.generate());
+    public void testBeginWithDigit() throws SRLSyntaxError {
+        assertEquals("/^[0-9]/", TestUtil.toRegex("begin with digit"));
     }
 
     /**
      * Test method begin with that accept one character
      * Example: a,b,c
      */
-    public void testBeginWithLetter(){
-        SRLCompiler compiler = new SRLCompiler("begin with letter");
-        compiler.parse();
-        assertEquals("/^[a-z]/",compiler.generate());
+    public void testBeginWithLetter() throws SRLSyntaxError {
+        assertEquals("/^[a-z]/", TestUtil.toRegex("begin with letter"));
     }
 
     /**
      * Test method begin with one letter or one digit
      * Example: 1b
      */
-    public void testBeginWithOneLetterOrOneDigit(){
-        SRLCompiler compiler = new SRLCompiler("begin with (letter,digit)");
-        compiler.parse();
-        assertEquals("/^(?:[a-z][0-9])/",compiler.generate());
+    public void testBeginWithOneLetterOrOneDigit() throws SRLSyntaxError {
+        assertEquals("/^(?:[a-z][0-9])/", TestUtil.toRegex("begin with (letter,digit)"));
     }
 
     /**
@@ -48,10 +38,8 @@ public class TestBeginWith extends TestCase {
      * Example: a1,b5h7
      *
      */
-    public void testBeginWithLetterDigitOneOrMore(){
-        SRLCompiler compiler = new SRLCompiler("begin with (letter,digit) once or more");
-        compiler.parse();
-        assertEquals("/^(?:[a-z][0-9])+/",compiler.generate());
+    public void testBeginWithLetterDigitOneOrMore() throws SRLSyntaxError {
+        assertEquals("/^(?:[a-z][0-9])+/", TestUtil.toRegex("begin with (letter,digit) once or more"));
     }
 
     /**
@@ -60,10 +48,8 @@ public class TestBeginWith extends TestCase {
      * Example: a1,b5h7
      *
      */
-    public void testBeginWithOneOrMoreLetterAndOneOrMoreDigit(){
-        SRLCompiler compiler = new SRLCompiler("begin with any of(letter,digit) once or more");
-        compiler.parse();
-        assertEquals("/^(?:[a-z]|[0-9])+/",compiler.generate());
+    public void testBeginWithOneOrMoreLetterAndOneOrMoreDigit() throws SRLSyntaxError {
+        assertEquals("/^(?:[a-z]|[0-9])+/", TestUtil.toRegex("begin with any of(letter,digit) once or more"));
     }
 
 
