@@ -32,7 +32,7 @@ public class SRL {
     public SRL(File file) throws IOException {
         this(file.toPath());
     }
-    
+
     private static String fileToString(Path filePath) throws IOException {
         StringBuilder sb = new StringBuilder("");
         for (String line : Files.readAllLines(filePath)) sb.append(line).append("\n");

@@ -1,11 +1,17 @@
+import com.github.simpleregex.Main;
 import com.github.simpleregex.SRLCompiler;
 import junit.framework.TestCase;
+
+import java.io.IOException;
 
 /**
  * Created by marco on 07/09/16.
  */
 public class TestBeginWith extends TestCase {
 
+    public void test() throws IOException {
+        Main.main(new String[]{"test.srl"});
+    }
 
     /**
      * Test method begin with that accept one digit
