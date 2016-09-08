@@ -1,10 +1,13 @@
 *.class
 
+#target
+
+target
+
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.ear
 
@@ -14,3 +17,7 @@ hs_err_pid*
 # IDE
 .idea/
 *.iml
+out/
+nbproject
+build.xml
+manifest.mf
