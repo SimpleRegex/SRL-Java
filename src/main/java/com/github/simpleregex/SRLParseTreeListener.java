@@ -20,7 +20,7 @@ public class SRLParseTreeListener extends SRLBaseListener {
     enum RegexElement {
         FROM("[", "-", "]"),
         GROUP("(?:", ")"),
-        OPTIONAL("?"),
+        OPTIONAL("(?:", ")?"),
         CAPTURE("(", ")"),
         CAPTURE_AS("(?<", ">", ")"),
         CASE_INSENSITIVE("i"),
@@ -33,8 +33,7 @@ public class SRLParseTreeListener extends SRLBaseListener {
         NEW_LINE("\\n"),
         TAB("\\t"),
         ONE_OF("[", "]"),
-        ANY_OF("(?:", ")"),
-        SELECTION("|"),
+        ANY_OF("(?:", "|", ")"),
         ANY_CHARACTER("\\W"),
         NO_CHARACTER("\\w"),
         NO_WHITESPACE("\\S"),
@@ -131,11 +130,13 @@ public class SRLParseTreeListener extends SRLBaseListener {
 
     @Override
     public void enterQuantifier(SRLParser.QuantifierContext ctx) {
+        boolean optional = ctx.KEYW_OPTIONAL() != null;
+        if(optional) addRegexStart(RegexElement.OPTIONAL);
         visit(ctx.at_least(), this::enterAt_least);
         visit(ctx.between(), this::enterBetween);
         visit(ctx.exactly(), this::enterExactly);
         visit(ctx.or_more(), this::enterOr_more);
-        if(ctx.KEYW_OPTIONAL() != null) addRegexVal(RegexElement.OPTIONAL);
+        if(optional) addRegexEnd(RegexElement.OPTIONAL);
     }
 
     @Override
@@ -168,18 +169,19 @@ public class SRLParseTreeListener extends SRLBaseListener {
     }
 
     private <T extends ParserRuleContext> void enterConditionalStmt(SRLParser.If_stmtContext ifStmt, T stmt, Consumer<T> visitor) {
-        RegexElement ifRegex = null;
         if(ifStmt.KEYW_HAD() != null) {
-            ifRegex = ifStmt.KEYW_NOT() != null ? RegexElement.IF_NOT_HAD : RegexElement.IF_HAD;
+            RegexElement ifRegex = ifStmt.KEYW_NOT() != null ? RegexElement.IF_NOT_HAD : RegexElement.IF_HAD;
             addRegexStart(ifRegex);
+            enterBlock(ifStmt.block());
+            addRegexEnd(ifRegex);
             visitor.accept(stmt);
-        }
-        if(ifStmt.KEYW_FOLLOWED() != null){
-            ifRegex = ifStmt.KEYW_NOT() != null ? RegexElement.IF_NOT_FOLLOWED : RegexElement.IF_FOLLOWED;
+        }else if(ifStmt.KEYW_FOLLOWED() != null){
+            visitor.accept(stmt);
+            RegexElement ifRegex = ifStmt.KEYW_NOT() != null ? RegexElement.IF_NOT_FOLLOWED : RegexElement.IF_FOLLOWED;
             addRegexStart(ifRegex);
-            visitor.accept(stmt);
+            enterBlock(ifStmt.block());
+            addRegexEnd(ifRegex);
         }
-        addRegexEnd(ifRegex);
     }
 
     @Override
@@ -300,9 +302,7 @@ public class SRLParseTreeListener extends SRLBaseListener {
 
     @Override
     public void enterBracketed_stmts(SRLParser.Bracketed_stmtsContext ctx) {
-        addRegexStart(RegexElement.GROUP);
         ctx.stmt().forEach(this::enterStmt);
-        addRegexEnd(RegexElement.GROUP);
     }
 
     @Override
@@ -310,17 +310,17 @@ public class SRLParseTreeListener extends SRLBaseListener {
         SRLParser.BlockContext block = ctx.block();
         if(block.STRING() != null) visitTerminal(block.STRING());
         else {
-            addRegexStart(RegexElement.GROUP);
+            addRegexStart(RegexElement.ANY_OF);
             block.stmt().forEach(this::enterStmt);
             List<SRLParser.StmtContext> stmts = block.bracketed_stmts().stmt();
             if(stmts.size() > 0) {
                 visit(stmts.get(0), this::enterStmt);
                 for (int i = 1; i < stmts.size(); i++) {
-                    addRegexVal(RegexElement.SELECTION);
+                    addRegexVal(RegexElement.ANY_OF);
                     visit(stmts.get(i), this::enterStmt);
                 }
             }
-            addRegexEnd(RegexElement.GROUP);
+            addRegexEnd(RegexElement.ANY_OF);
         }
     }
 
