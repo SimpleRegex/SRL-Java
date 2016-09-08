@@ -12,8 +12,8 @@ import java.util.regex.Pattern;
  */
 public class SRL {
 
-    private final SRLCompiler compiler;
-    private final Pattern pattern;
+    public final SRLCompiler compiler;
+    public final Pattern pattern;
 
     public SRL(SRLCompiler compiler) {
         this.compiler = compiler;
