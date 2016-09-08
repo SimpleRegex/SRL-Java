@@ -1,4 +1,5 @@
 import com.github.simpleregex.SRL;
+import com.github.simpleregex.error.SRLSyntaxError;
 import junit.framework.TestCase;
 
 /**
@@ -9,7 +10,7 @@ public class TestSrl extends TestCase {
     /**
      * Test a regular expression for email
      */
-    public void testEmailAddress(){
+    public void testEmailAddress() throws SRLSyntaxError {
         SRL srl=new SRL("begin with any of (digit, letter, one of \"._%+-\") once or more,\n" +
                 "literally \"@\",\n" +
                 "any of (digit, letter, one of \".-\") once or more,\n" +

@@ -1,5 +1,7 @@
 package com.github.simpleregex;
 
+import com.github.simpleregex.error.SRLSyntaxError;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,12 +18,12 @@ import java.util.regex.Pattern;
  */
 public class SRL {
 
-    private final SRLCompiler compiler;
-    private final Pattern pattern;
     private final String regExpr;
     private final String modifiers;
+    public final SRLCompiler compiler;
+    public final Pattern pattern;
 
-    private SRL(SRLCompiler compiler) {
+    private SRL(SRLCompiler compiler) throws SRLSyntaxError {
         this.compiler = compiler;
         this.compiler.parse();
         this.regExpr=this.compiler.generate();
@@ -42,15 +44,15 @@ public class SRL {
         return compileModifier;
     }
 
-    public SRL(String input) {
+    public SRL(String input) throws SRLSyntaxError {
         this(new SRLCompiler(input));
     }
 
-    public SRL(Path filePath) throws IOException {
+    public SRL(Path filePath) throws IOException, SRLSyntaxError {
         this(fileToString(filePath));
     }
 
-    public SRL(File file) throws IOException {
+    public SRL(File file) throws IOException, SRLSyntaxError {
         this(file.toPath());
     }
 
