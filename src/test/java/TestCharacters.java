@@ -39,7 +39,7 @@ public class TestCharacters extends TestCase {
         assertEquals(Util.toRegex("tab"), "/\\t/");
     }
 
-    public void testRaw() {
+    public void testRaw() throws SRLSyntaxError {
         assertEquals(Util.toRegex("raw \"[a-zA-Z]\""), "/[a-zA-Z]/");
     }
 
