@@ -7,11 +7,11 @@ import junit.framework.TestCase;
 public class TestMisc extends TestCase {
 
     public void testCaseInsensitivity() throws SRLSyntaxError {
-        assertEquals(TestUtil.toRegex("letter"), TestUtil.toRegex("LeTtEr"));
+        assertEquals(Util.toRegex("letter"), Util.toRegex("LeTtEr"));
     }
 
     public void testCommaSeparation() throws SRLSyntaxError {
-        assertEquals(TestUtil.toRegex("letter, letter"), TestUtil.toRegex("letter letter"));
+        assertEquals(Util.toRegex("letter, letter"), Util.toRegex("letter letter"));
     }
 
 }
